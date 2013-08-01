@@ -1,0 +1,4 @@
+django-cms
+django-filer
+django-discover-runner
+cmsplugin-filer

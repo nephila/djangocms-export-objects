@@ -17,7 +17,7 @@ if sys.argv[-1] == 'publish':
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 requirements = open('requirements.txt').readlines()
-test_requirements = []
+test_requirements = open('djangocms_export_objects/tests/requirements.txt').readlines()
 
 # Add Python 2.6-specific dependencies
 if sys.version_info[:2] < (2, 7):
@@ -54,6 +54,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
     ],
-    test_suite='tests',
-    test_requirements=test_requirements,
+    test_suite='runtests.main',
+    tests_require=test_requirements,
 )
