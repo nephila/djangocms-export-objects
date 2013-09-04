@@ -10,10 +10,10 @@ Tests for `djangocms_export_objects` module.
 
 import unittest
 
-from djangocms_export_objects import djangocms_export_objects
+from djangocms_export_objects import utils
 
 
-class TestDjangocms_export_objects(unittest.TestCase):
+class TestDjangocmsExportObjects(unittest.TestCase):
 
     def setUp(self):
         pass

@@ -3,3 +3,5 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include requirements.txt
+recursive-include djangocms_export_objects *.jpg *.png *.html
