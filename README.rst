@@ -18,8 +18,8 @@ and all their dependencies.
 * Free software: BSD license
 
 .. warning:: This is highly experimental, it's not guaranteed to work in any
-    way, to keep your data intact and to not create a black hole in a server
-    near you.
+    way, to keep your data intact; it may harm you, your cat and even create a
+    black hole in a server near you. You've been warned!
 
 
 Features
@@ -45,9 +45,12 @@ Options
 * ``-a``, ``--all``: Use Django's base manager to dump all models stored in the
   database, including those that would otherwise be filtered or modified by a
   custom manager. When dumping ``Page`` objects, ``PageManager`` is always used.
-* ``-r``, ``--recursive``: This option only affects ``Page`` objects dump; it
-  will fetch all the pages whose ancestor is in the given queryset (i.e.: it
-  dumps branches of the page tree).
+
+Options valid only when dumping Page objects
+--------------------------------------------
+
+* ``-r``, ``--recursive``: it will fetch all the pages whose ancestor is in the
+  given queryset (i.e.: it dumps branches of the page tree).
 * ``-s``, ``--skip-ancestors``: Skip the ancestors of the pages in the given
   queryset. **Use this at your own risk**: You'll not be able do load back the
   data if you don't have **all** the ancestors of the dumped pages in the
@@ -56,8 +59,27 @@ Options
 Usage
 *****
 
+To dump the whole page tree with all the respective plugins and content::
+
+    ./manage.py cms_dump_objects 'cms.Page.objects.all()' > /path/to/dump.json
+
+To dump a branch starting for a given page::
+
+    ./manage.py cms_dump_objects -r 'cms.Page.objects.filter(reverse_id=whatever)' > /path/to/dump.json
 
 
 Caveats
 *******
 
+* As Django ``load_data`` command matches objects based on their primary key,
+  this tool is mostly intended as a way to do partial backup of existing projects,
+  and to move data between different instances of the same project (say:
+  development and testing environment and so on); using it to move data between
+  projects can lead to data overwrite and data loss.
+
+* When exporting a partial subset of pages, all the ancestors will be dumped too,
+  the be able to load them back in a project; existing pages with the same
+  primary keys in the target project will overwritten.
+
+* To avoid the above behavior use ``-s`` option, but to be able to load data back
+  you'll need to have the pages with the needed primary keys before loading.
