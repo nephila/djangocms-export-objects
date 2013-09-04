@@ -21,6 +21,7 @@ test_requirements = []
 
 # Add Python 2.6-specific dependencies
 if sys.version_info[:2] < (2, 7):
+    requirements.append('ordereddict')
     requirements.append('argparse')
     test_requirements.append('unittest2')
 # Add Python 2.6 and 2.7-specific dependencies

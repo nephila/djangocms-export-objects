@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-import collections
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 
-class InstancesList(collections.OrderedDict):
+class InstancesList(OrderedDict):
 
     def get_label(self, elem):
         return "%s.%s.%s" % (elem._meta.app_label, elem._meta.module_name, elem.pk)
