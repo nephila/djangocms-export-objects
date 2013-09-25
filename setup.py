@@ -22,6 +22,7 @@ test_requirements = open('djangocms_export_objects/tests/requirements.txt').read
 # Add Python 2.6-specific dependencies
 if sys.version_info[:2] < (2, 7):
     requirements.append('argparse')
+    requirements.append('ordereddict')
     test_requirements.append('unittest2')
 
 setup(

@@ -1,0 +1,15 @@
+[run]
+source = djangocms_export_objects
+branch = True
+omit =
+    djangocms_export_objects/tests/*
+    djangocms_export_objects/__init__.py
+    djangocms_export_objects/models.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:

@@ -8,10 +8,15 @@ python:
   - 2.6
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -r requirements.txt
+install:
+  - pip install -r djangocms_export_objects/tests/requirements.txt
+  - pip install python-coveralls coverage
 
 # command to run tests, e.g. python setup.py test
-script: python setup.py test
+script: coverage run --rcfile=coverage.rc setup.py test
+
+after_success:
+  coveralls --config_file=coverage.rc
 
 matrix:
   allow_failures:
