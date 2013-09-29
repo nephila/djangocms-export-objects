@@ -8,7 +8,6 @@ from six import StringIO
 
 from .base import unittest
 from .tmpdir import temp_dir
-from unittest import skipIf
 
 ROOT_DIR = os.path.dirname(__file__)
 DOCS_DIR = os.path.abspath(os.path.join(ROOT_DIR, u'..', u'..', u'docs'))
@@ -28,7 +27,7 @@ class DocsTestCase(unittest.TestCase):
     """
     Test docs building correctly for HTML
     """
-    @skipIf(has_no_internet(), "No internet")
+    @unittest.skipIf(has_no_internet(), "No internet")
     def test_html(self):
         nullout = StringIO()
         with temp_dir() as OUT_DIR:
