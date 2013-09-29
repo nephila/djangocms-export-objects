@@ -32,3 +32,8 @@ Largely based on django ``dump_data`` command it differs in two aspects:
 - Objects selection is based on a queryset passed by the user (as string)
 - Objects dependencies are evaluated on a per-instance base to dump only the
   corresponding dependent instances.
+
+Documentation
+*************
+
+For documentation see http://django-cms-export-objects.readthedocs.org
