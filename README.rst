@@ -2,14 +2,14 @@
 django CMS Export Objects
 ===============================
 
-#.. image:: https://badge.fury.io/py/djangocms-export-objects.png
-#        :target: http://badge.fury.io/py/djangocms-export-object
+.. image:: https://badge.fury.io/py/djangocms-export-objects.png
+        :target: http://badge.fury.io/py/djangocms-export-object
     
 .. image:: https://travis-ci.org/nephila/djangocms-export-objects.png?branch=master
         :target: https://travis-ci.org/nephila/djangocms-export-objects
 
-#.. image:: https://pypip.in/d/djangocms-export-objects/badge.png
-#        :target: https://crate.io/packages/djangocms-export-objects?version=latest
+.. image:: https://pypip.in/d/djangocms-export-objects/badge.png
+        :target: https://crate.io/packages/djangocms-export-objects?version=latest
 
 .. image:: https://coveralls.io/repos/nephila/djangocms-export-objects/badge.png
         :target: https://coveralls.io/r/nephila/djangocms-export-objects
