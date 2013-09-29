@@ -4,6 +4,7 @@ branch = True
 omit =
     djangocms_export_objects/tests/*
     djangocms_export_objects/__init__.py
+    djangocms_export_objects/*/__init__.py
     djangocms_export_objects/models.py
 
 [report]
