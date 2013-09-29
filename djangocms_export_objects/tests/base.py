@@ -7,9 +7,6 @@ if sys.version_info[:2] < (2, 7):
 else:
     import unittest
 
-from six import StringIO
-
-
 
 class TestsBase(unittest.TestCase):
 
@@ -31,8 +28,6 @@ class TestsBase(unittest.TestCase):
         }
         p1 = create_page('page1', published=True, in_navigation=True, **defaults)
         p4 = create_page('page4', published=True, in_navigation=True, **defaults)
-        p1 = Page.objects.get(pk=p1.pk)
-        p2 = create_page('page2', published=True, in_navigation=True, parent=p1, **defaults)
-        create_page('page3', published=True, in_navigation=True, parent=p2, **defaults)
-        p4 = Page.objects.get(pk=p4.pk)
-        create_page('page5', published=True, in_navigation=True, parent=p4, **defaults)
+        p2 = create_page('page2', published=True, in_navigation=True, reverse_id="export", parent=p1, **defaults)
+        p3 = create_page('page3', published=True, in_navigation=True, parent=p2, **defaults)
+        p5 = create_page('page5', published=True, in_navigation=True, parent=p4, **defaults)

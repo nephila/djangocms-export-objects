@@ -73,14 +73,14 @@ To dump a branch starting for a given page::
 Caveats
 *******
 
-* As Django ``load_data`` command matches objects based on their primary key,
+* As Django ``loaddata`` command matches objects based on their primary key,
   this tool is mostly intended as a way to do partial backup of existing projects,
   and to move data between different instances of the same project (say:
   development and testing environment and so on); using it to move data between
   projects can lead to data overwrite and data loss.
 
 * When exporting a partial subset of pages, all the ancestors will be dumped too,
-  the be able to load them back in a project; existing pages with the same
+  to be able to load them back in a project; existing pages with the same
   primary keys in the target project will overwritten.
 
 * To avoid the above behavior use ``-s`` option, but to be able to load data back

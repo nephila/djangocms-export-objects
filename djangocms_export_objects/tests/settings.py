@@ -171,6 +171,7 @@ INSTALLED_APPS = (
     'menus',
     'mptt',
     'cms.plugins.text',
+    'cms.plugins.link',
     'filer',
     'easy_thumbnails',
     'djangocms_export_objects',
