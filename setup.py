@@ -3,7 +3,7 @@
 
 import os
 import sys
-
+from djangocms_export_objects import __version__
 
 try:
     from setuptools import setup, find_packages
@@ -27,7 +27,7 @@ if sys.version_info[:2] < (2, 7):
 
 setup(
     name='djangocms_export_objects',
-    version='0.1.0',
+    version=__version__,
     description='A django CMS command to export PlaceholderFields-enable objects and all their dependencies',
     long_description=readme + '\n\n' + history,
     author='Iacopo Spalletti',
