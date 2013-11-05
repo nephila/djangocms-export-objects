@@ -1,6 +1,18 @@
-========
+=====
 Usage
-========
+=====
+
+The main feature of `cms_dump_objects` is that you can select data to be exported
+using a normal Django QuerySet.
+
+QuerySet must be written in quotes and can only contain scalar value as arguments
+to `filter`, `exclude` and other selection methods. Only methods that return a
+QuerySet can be used.
+
+It share most other arguments with `dump_data`.
+
+Examples
+********
 
 To dump the whole page tree with all the respective plugins and content::
 
@@ -18,9 +30,6 @@ Options
   by using Django serializer, you can use any serialization format enabled in
   your project.
 * ``--indent``: Specifies the indent level to use when pretty-printing output.
-* ``--database``: Nominates a specific database to dump fixtures from.
-  Defaults to the "default" database. Works in the same way as the ``dump_data``
-  option
 * ``-n``, ``--natural``: Use natural keys if they are available.
 * ``-a``, ``--all``: Use Django's base manager to dump all models stored in the
   database, including those that would otherwise be filtered or modified by a

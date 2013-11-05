@@ -2,11 +2,10 @@
 Installation
 ============
 
-At the command line::
+Install using pip
 
-    $ easy_install djangocms_export_objects
-
-Or, if you have virtualenvwrapper installed::
-
-    $ mkvirtualenv djangocms_export_objects
     $ pip install djangocms_export_objects
+
+or directly from github:
+
+    $ pip install -e https://github.com/nephila/djangocms-export-objects#egg=djangocms_export_objects

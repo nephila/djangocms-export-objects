@@ -14,7 +14,7 @@ django CMS Export Objects
 .. image:: https://coveralls.io/repos/nephila/djangocms-export-objects/badge.png
         :target: https://coveralls.io/r/nephila/djangocms-export-objects
 
-A django CMS command to export cMS Pages and PlaceholderFields-enabled objects
+A django CMS command to export CMS Pages and PlaceholderFields-enabled objects
 and all their dependencies.
 
 * Free software: BSD license
@@ -36,4 +36,4 @@ Largely based on django ``dump_data`` command it differs in two aspects:
 Documentation
 *************
 
-For documentation see http://django-cms-export-objects.readthedocs.org
+For documentation see http://djangocms-export-objects.readthedocs.org

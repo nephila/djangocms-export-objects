@@ -25,9 +25,9 @@ class Command(BaseCommand):
                     help='Specifies the output serialization format for fixtures.'),
         make_option('--indent', default=None, dest='indent', type='int',
                     help='Specifies the indent level to use when pretty-printing output'),
-        make_option('--database', action='store', dest='database',
-                    default=DEFAULT_DB_ALIAS, help='Nominates a specific database to dump '
-                                                   'fixtures from. Defaults to the "default" database.'),
+        #make_option('--database', action='store', dest='database',
+        #            default=DEFAULT_DB_ALIAS, help='Nominates a specific database to dump '
+        #                                           'fixtures from. Defaults to the "default" database.'),
         make_option('-n', '--natural', action='store_true',
                     dest='use_natural_keys', default=False,
                     help='Use natural keys if they are available.'),
@@ -55,6 +55,7 @@ class Command(BaseCommand):
 
     def get_querysets(self):
         from django.db.models import get_app, get_apps, get_model
+        self.options['database'] = DEFAULT_DB_ALIAS
 
         if not self._querysets:
             app_list = SortedDict()
