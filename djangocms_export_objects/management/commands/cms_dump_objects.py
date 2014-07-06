@@ -5,6 +5,7 @@ from distutils.version import LooseVersion
 from django.db import models, DEFAULT_DB_ALIAS
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management.commands.dumpdata import sort_dependencies
 from django.core import serializers
 from django.contrib.contenttypes.models import ContentType
 from django.utils.datastructures import SortedDict
@@ -25,9 +26,9 @@ class Command(BaseCommand):
                     help='Specifies the output serialization format for fixtures.'),
         make_option('--indent', default=None, dest='indent', type='int',
                     help='Specifies the indent level to use when pretty-printing output'),
-        #make_option('--database', action='store', dest='database',
-        #            default=DEFAULT_DB_ALIAS, help='Nominates a specific database to dump '
-        #                                           'fixtures from. Defaults to the "default" database.'),
+        make_option('--database', action='store', dest='database',
+                    default=DEFAULT_DB_ALIAS, help='Nominates a specific database to dump '
+                    'fixtures from. Defaults to the "default" database.'),
         make_option('-n', '--natural', action='store_true',
                     dest='use_natural_keys', default=False,
                     help='Use natural keys if they are available.'),
@@ -40,6 +41,9 @@ class Command(BaseCommand):
         make_option('-s', '--skip-ancestors', dest='skip_ancestors', action='store_true',
                     default=False,
                     help='Dump all the ancestors of the pages in the given queryset.'),
+        make_option('-x', '--exclude-models', dest='excluded', action='store',
+                    default="",
+                    help='Exclude the given models (as strings) from the export.'),
     )
     help = ("Output the contents of the given queryset as a fixture of the given"
             "format (using each model's default manager unless --all is "
@@ -55,7 +59,6 @@ class Command(BaseCommand):
 
     def get_querysets(self):
         from django.db.models import get_app, get_apps, get_model
-        self.options['database'] = DEFAULT_DB_ALIAS
 
         if not self._querysets:
             app_list = SortedDict()
@@ -98,11 +101,13 @@ class Command(BaseCommand):
     def handle(self, *app_labels, **options):
         self.options = options
         self.app_labels = app_labels
+        self.relateds = []
 
         format = self.options.get('format')
         indent = self.options.get('indent')
         show_traceback = self.options.get('traceback')
         use_natural_keys = self.options.get('use_natural_keys')
+        self.excluded = self.options.get('excluded').split(',')
 
         # Check that the serialization format exists; this is a shortcut to
         # avoid collating all the objects and _then_ failing.
@@ -119,9 +124,17 @@ class Command(BaseCommand):
         for qs in self.get_querysets():
             for item in qs:
                 self.extract_fields(item)
-
+        app_list = self.dump_list.model_list()
+        obj_list = []
+        ordered = sort_dependencies(app_list.items())
+        explored = []
+        for item in ordered:
+            if item not in explored:
+                app_list = self.dump_list.get_items_by_model_path(item)
+                obj_list.extend(app_list)
+                explored.append(item)
         try:
-            return serializers.serialize(format, self.dump_list.values(),
+            return serializers.serialize(format, obj_list,
                                          indent=indent,
                                          use_natural_keys=use_natural_keys)
         except Exception, e:
@@ -129,8 +142,43 @@ class Command(BaseCommand):
                 raise
             raise CommandError("Unable to serialize database: %s" % e)
 
+    def append_item(self, item):
+        if (item and
+                not self.dump_list.get_model_path(item) in self.excluded and
+                not self.dump_list.get_label(item) in self.dump_list and
+                not isinstance(item, ContentType)):
+            self.dump_list.add(item)
+
     def extract_fields(self, item):
-        if not self.dump_list.get_label(item) in self.dump_list:
+        if (item and
+                not self.dump_list.get_model_path(item) in self.excluded and
+                not self.dump_list.get_label(item) in self.dump_list and
+                not isinstance(item, ContentType)):
+            for field in item._meta.many_to_many:
+                value = getattr(item, field.name)
+                if isinstance(field, models.ManyToManyField):
+                    if value:
+                        for related_instance in value.all():
+                            if related_instance not in self.relateds:
+                                self.relateds.append(related_instance)
+                                self.extract_fields(related_instance)
+                                self.append_item(related_instance)
+            for field in item._meta.fields:
+                if (isinstance(item, Page)
+                    and self.options.get('skip_ancestors')
+                    and field.name == 'parent'):
+                        continue
+                value = getattr(item, field.name)
+                if isinstance(field, models.ForeignKey):
+                    if value and value not in self.relateds:
+                        self.relateds.append(value)
+                        self.extract_fields(value)
+                        self.append_item(value)
+                if isinstance(field, PlaceholderField):
+                    if value:
+                        self.extract_fields(value)
+                        for plugin in value.get_plugins_list():
+                            self.extract_fields(plugin.get_plugin_instance()[0])
             if isinstance(item, Page):
                 if DJANGOCMS_2_3:
                     pages = (item, )
@@ -146,19 +194,4 @@ class Command(BaseCommand):
                     self.dump_list.add(page)
                     self.dump_list.update(page.title_set.all())
             else:
-                if not isinstance(item, ContentType):
-                    self.dump_list.add(item)
-            for field in item._meta.fields:
-                if (isinstance(item, Page)
-                    and self.options.get('skip_ancestors')
-                    and field.name == 'parent'):
-                        continue
-                value = getattr(item, field.name)
-                if isinstance(field, models.ForeignKey):
-                    if value:
-                        self.extract_fields(value)
-                if isinstance(field, PlaceholderField):
-                    if value:
-                        self.extract_fields(value)
-                        for plugin in value.get_plugins_list():
-                            self.extract_fields(plugin.get_plugin_instance()[0])
+                self.append_item(item)

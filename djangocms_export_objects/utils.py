@@ -7,6 +7,9 @@ except ImportError:
 
 class InstancesList(OrderedDict):
 
+    def get_model_path(self, elem):
+        return "%s.%s" % (elem._meta.app_label, elem._meta.module_name)
+
     def get_label(self, elem):
         return "%s.%s.%s" % (elem._meta.app_label, elem._meta.module_name, elem.pk)
 
@@ -22,6 +25,23 @@ class InstancesList(OrderedDict):
         label = self.get_label(elem)
         if not label in self:
             self[label] = elem
+
+    def model_list(self):
+        app_list = OrderedDict()
+        for item in self.values():
+            app, model = item._meta.app_label, item.__class__
+            if app not in app_list:
+                app_list[app] = []
+            app_list[app].append(model)
+        return app_list
+
+    def get_items_by_model_path(self, model):
+        path = "%s" % (model._meta)
+        items = []
+        for label, item in self.items():
+            if label.startswith(path):
+                items.append(item)
+        return items
 
     def discard(self, elem):
         self.pop(elem, None)
